@@ -40,7 +40,9 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
           docker pull ${{ secrets.ECR_REPOSITORY }}:latest
           docker stop my-app || true
           docker rm my-app || true
           docker run -d --name my-app -p 80:80 ${{ secrets.ECR_REPOSITORY }}:latest
+          
